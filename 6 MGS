@@ -1,0 +1,21 @@
+--06-01
+SELECT DISTINCT category_name
+FROM categories WHERE category_id
+  IN (SELECT category_id 
+      FROM products);
+      
+--06-02
+SELECT product_name, list_price
+FROM products WHERE list_price >
+  (SELECT AVG(list_price)
+    FROM products)
+    ORDER BY list_price desc;
+    
+--06-03
+SELECT category_name 
+FROM categories cat
+  WHERE NOT EXISTS 
+      (SELECT product_name FROM products pro
+      WHERE cat.category_id = pro.category_id); 
+      
+      
