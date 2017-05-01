@@ -1,0 +1,108 @@
+--05-01
+SELECT category_name, COUNT(product_id), MAX(list_price) as list_price
+FROM categories JOIN products
+ON categories.category_id = products.category_id
+GROUP BY category_name
+ORDER BY COUNT(product_id) desc;
+
+--05-02
+SELECT product_name, SUM(item_price - discount_amount * quantity) AS total_amt
+FROM products pr JOIN order_items oi
+ON pr.product_id = oi.product_id
+GROUP BY ROLLUP (product_name);
+
+--05-03
+SELECT email_address, COUNT(DISTINCT item_id)
+FROM customers cus JOIN orders ord
+ON cus.customer_id = ord.customer_id
+JOIN order_items oi
+ON ord.order_id = oi.order_id
+JOIN products pr
+ON pr.product_id = oi.product_id
+GROUP BY cus.email_address
+HAVING COUNT(DISTINCT item_id) > 1;
+
+
+
+
+
+
+--------
+
+
+
+
+
+--query to show if product name is a natural key
+SELECT product_name, COUNT(*) 
+FROM products
+GROUP BY product_name
+HAVING COUNT(*) > 1
+ORDER BY COUNT(*) DESC; -- WHEN LOOKING FOR DUPLICATES IN A TABLE
+
+--
+SELECT *
+FROM products p1 INNER JOIN products p2
+  ON  p1.product_id <> p2.product_id
+  WHERE p1.product_name = p2.product_name;
+  
+  --
+
+SELECT COUNT(DISTINCT product_id) AS id_cnt,
+COUNT(DISTINCT product_name) AS name_cnt
+FROM products;
+
+--query to show if category_id is a natural key
+SELECT category_id, COUNT(*)
+FROM products
+GROUP BY category_id
+HAVING COUNT(*) > 1
+ORDER BY COUNT(*) DESC;
+
+
+-- wite a select statement that returns one row for each customer that has 
+-- orders with these columns:
+-- the email_address column for the Customers table.
+-- the sum of the item price in the order_items table multiplied by the quantity
+-- in the order_items table.
+-- the sum of the discount amount multiplied by the quantity in the order_items
+-- table.
+-- sort the result set in descending sequence by the item price total for each
+-- customer.
+
+SELECT email_address, SUM(item_price * quantity) AS item_price,
+SUM(discount_amount * quantity) AS total_discount
+FROM customers cus JOIN orders ord
+ON cus.customer_id = ord.customer_id
+JOIN order_items oi
+ON ord.order_id = oi.order_id
+GROUP BY email_address
+ORDER BY item_price DESC;
+
+-- write a select statement that returns one row for each customer that has orders
+-- with these columns:
+-- The email_address from the customers table
+-- A count of the number of orders
+-- The total amount for each order (hint: first, subtract the discount amount from
+-- the price. Then, multiply  
+-- Return only those rows where the customer has more than 1 order
+-- Sort the result set in desc sequence by the sum of the line item amounts
+
+SELECT email_address, COUNT(*) AS order_count , 
+SUM(item_price - discount_amount * quantity) as sum_amt
+FROM customers cus JOIN orders ord
+ON cus.customer_id = ord.customer_id
+JOIN order_items oi
+ON ord.order_id = oi.order_id
+GROUP BY email_address
+HAVING COUNT(*) >1
+ORDER BY sum_amt DESC;
+
+
+
+
+
+
+
+
+
