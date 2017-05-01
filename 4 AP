@@ -1,0 +1,54 @@
+--04-01
+SELECT * FROM vendors v INNER JOIN invoices i
+ON v.vendor_id = i.vendor_id;
+
+--04-02
+SELECT vendor_name, invoice_number, invoice_date, 
+invoice_total - payment_total - credit_total AS balance_due  
+FROM vendors INNER JOIN invoices
+ON vendors.vendor_id = invoices.vendor_id
+WHERE invoice_total - payment_total - credit_total <> 0
+ORDER BY vendor_name ASC;
+
+--04-03
+SELECT vendor_name, default_account_number, account_description AS description
+FROM vendors v INNER JOIN general_ledger_accounts g
+ON v.default_account_number = g.account_number
+ORDER BY account_description, vendor_name;
+
+--04-04
+SELECT vendor_name, invoice_date, invoice_number, 
+invoice_sequence AS li_sequence, line_item_amt AS li_amount
+FROM invoices inv INNER JOIN vendors ven
+ON ven.vendor_id = inv.vendor_id 
+INNER JOIN invoice_line_items li
+ON inv.invoice_id = li.invoice_id
+ORDER BY vendor_name, invoice_date, invoice_number, invoice_sequence;
+
+--04-05
+SELECT v1.vendor_id, v1.vendor_name, 
+v1.vendor_contact_first_name || ',' || v1.vendor_contact_last_name AS contact_name
+FROM vendors v1 
+INNER JOIN vendors v2
+ON v1.vendor_contact_last_name = v2.vendor_contact_last_name 
+AND v1.vendor_id <> v2.vendor_id
+ORDER BY contact_name;
+
+--04-06
+SELECT gl.account_number, account_description
+FROM general_ledger_accounts gl 
+LEFT JOIN invoice_line_items li
+ON gl.account_number = li.account_number
+WHERE li.ACCOUNT_NUMBER is null
+ORDER BY account_number;
+
+--04-07
+SELECT vendor_name, 'OUTSIDE CA' AS vendor_state
+FROM vendors
+WHERE vendor_state <> 'CA'
+UNION SELECT vendor_name, vendor_state
+FROM vendors
+WHERE vendor_state = 'CA'
+ORDER BY vendor_name;
+
+
