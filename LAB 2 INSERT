@@ -1,0 +1,353 @@
+
+-- Step 1 --
+
+@/home/student/Data/cit225/oracle/truck/lab1.sql;
+
+
+-- Open log file.
+SPOOL lab2.log
+
+-- Perform Steps 2 - 16 of lab2 in this region
+SET DEFINE OFF
+
+CREATE TABLE incident_stage ( INCIDENT_DATE DATE,
+TYPE VARCHAR2(8),
+EMPLOYEE VARCHAR2(4),
+VEHICLE VARCHAR2(7),
+NOTES VARCHAR2(12));
+
+INSERT INTO incident_stage (INCIDENT_DATE, TYPE, EMPLOYEE, VEHICLE, NOTES) 
+VALUES (to_date('06-Dec-2016', 'dd-mon-rr'), 'Speeding', 'Judy', 'Big Dog', 'speed trap');
+
+INSERT INTO incident_stage (INCIDENT_DATE, TYPE, EMPLOYEE, VEHICLE, NOTES) 
+VALUES (to_date('22-Dec-2016', 'dd-mon-rr'), 'Speeding', 'Troy', 'Mad Max', 'holiday rush');
+
+
+
+
+
+
+--05
+SELECT instg.incident_date, instg.type, emp.employee_id, veh.vehicle_id, instg.notes
+FROM incident_stage instg
+JOIN employee emp
+ON instg.employee = emp.first_name
+JOIN vehicle veh
+ON instg.vehicle = veh.name;
+
+--07
+INSERT INTO incident
+(SELECT incident_s1.NEXTVAL,instg.incident_date, instg.type, emp.employee_id, veh.vehicle_id, instg.notes
+FROM incident_stage instg
+JOIN employee emp
+ON instg.employee = emp.first_name
+JOIN vehicle veh
+ON instg.vehicle = veh.name);
+
+--INSERT HAUL
+
+SET DEFINE OFF
+
+CREATE TABLE haul_stage ( EMPLOYEE VARCHAR2(4),
+BEGIN_CITY VARCHAR2(3),
+END_CITY VARCHAR2(3),
+CLIENT VARCHAR2(21),
+BEGIN_DATE DATE,
+END_DATE DATE,
+VEHICLE VARCHAR2(10));
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Judy', 'SLC', 'SFO', 'Oregon Lumber Inc', to_date('12/11/2016', 'mm/dd/yyyy'), to_date('12/13/2016', 'mm/dd/yyyy'), 'Classy Cat');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'SLC', 'SFO', 'Oregon Lumber Inc', to_date('01/20/2017', 'mm/dd/yyyy'), to_date('01/23/2017', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'SEA', 'SFO', 'Washington Apples Inc', to_date('12/27/2016', 'mm/dd/yyyy'), to_date('12/28/2016', 'mm/dd/yyyy'), 'Big Dog');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Judy', 'SEA', 'SFO', 'Oregon Lumber Inc', to_date('12/28/2016', 'mm/dd/yyyy'), to_date('12/31/2016', 'mm/dd/yyyy'), 'Big Dog');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Troy', 'SFO', 'SLC', 'Washington Apples Inc', to_date('01/14/2017', 'mm/dd/yyyy'), to_date('01/16/2017', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Judy', 'BOI', 'SEA', 'Oregon Lumber Inc', to_date('11/22/2016', 'mm/dd/yyyy'), to_date('11/23/2016', 'mm/dd/yyyy'), 'Classy Cat');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Troy', 'SEA', 'SLC', 'Idaho Potatoes Inc', to_date('01/12/2017', 'mm/dd/yyyy'), to_date('01/14/2017', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'SEA', 'SFO', 'Oregon Lumber Inc', to_date('12/27/2016', 'mm/dd/yyyy'), to_date('12/30/2016', 'mm/dd/yyyy'), 'Classy Cat');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Judy', 'SFO', 'SLC', 'Washington Apples Inc', to_date('11/23/2016', 'mm/dd/yyyy'), to_date('11/25/2016', 'mm/dd/yyyy'), 'Classy Cat');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Judy', 'SLC', 'SEA', 'Oregon Lumber Inc', to_date('01/19/2017', 'mm/dd/yyyy'), to_date('01/20/2017', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'SEA', 'BOI', 'Oregon Lumber Inc', to_date('02/12/2017', 'mm/dd/yyyy'), to_date('02/15/2017', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Troy', 'SLC', 'SEA', 'Washington Apples Inc', to_date('01/27/2017', 'mm/dd/yyyy'), to_date('01/29/2017', 'mm/dd/yyyy'), 'Big Dog');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'SEA', 'SLC', 'Washington Apples Inc', to_date('11/29/2016', 'mm/dd/yyyy'), to_date('12/02/2016', 'mm/dd/yyyy'), 'Big Dog');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Troy', 'SEA', 'SFO', 'Washington Apples Inc', to_date('11/16/2016', 'mm/dd/yyyy'), to_date('11/17/2016', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Judy', 'SLC', 'SEA', 'Idaho Potatoes Inc', to_date('02/15/2017', 'mm/dd/yyyy'), to_date('02/16/2017', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'SFO', 'BOI', 'Oregon Lumber Inc', to_date('02/13/2017', 'mm/dd/yyyy'), to_date('02/14/2017', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Troy', 'SFO', 'BOI', 'Oregon Lumber Inc', to_date('02/14/2017', 'mm/dd/yyyy'), to_date('02/17/2017', 'mm/dd/yyyy'), 'Big Dog');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'SFO', 'SLC', 'Oregon Lumber Inc', to_date('12/27/2016', 'mm/dd/yyyy'), to_date('12/29/2016', 'mm/dd/yyyy'), 'Classy Cat');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Troy', 'SLC', 'SEA', 'Washington Apples Inc', to_date('01/13/2017', 'mm/dd/yyyy'), to_date('01/15/2017', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'SFO', 'SEA', 'Idaho Potatoes Inc', to_date('01/05/2017', 'mm/dd/yyyy'), to_date('01/06/2017', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Troy', 'SLC', 'BOI', 'Oregon Lumber Inc', to_date('01/29/2017', 'mm/dd/yyyy'), to_date('01/30/2017', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Troy', 'SEA', 'SFO', 'Idaho Potatoes Inc', to_date('11/26/2016', 'mm/dd/yyyy'), to_date('11/28/2016', 'mm/dd/yyyy'), 'Classy Cat');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'SEA', 'SLC', 'Oregon Lumber Inc', to_date('12/20/2016', 'mm/dd/yyyy'), to_date('12/22/2016', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Judy', 'BOI', 'SFO', 'Idaho Potatoes Inc', to_date('01/10/2017', 'mm/dd/yyyy'), to_date('01/13/2017', 'mm/dd/yyyy'), 'Big Dog');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'SEA', 'BOI', 'Washington Apples Inc', to_date('11/30/2016', 'mm/dd/yyyy'), to_date('12/03/2016', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Troy', 'SFO', 'BOI', 'Idaho Potatoes Inc', to_date('01/07/2017', 'mm/dd/yyyy'), to_date('01/10/2017', 'mm/dd/yyyy'), 'Classy Cat');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Troy', 'SEA', 'BOI', 'Idaho Potatoes Inc', to_date('12/12/2016', 'mm/dd/yyyy'), to_date('12/14/2016', 'mm/dd/yyyy'), 'Classy Cat');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'SFO', 'SLC', 'Idaho Potatoes Inc', to_date('12/08/2016', 'mm/dd/yyyy'), to_date('12/10/2016', 'mm/dd/yyyy'), 'Classy Cat');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Judy', 'SLC', 'SFO', 'Oregon Lumber Inc', to_date('01/25/2017', 'mm/dd/yyyy'), to_date('01/28/2017', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'SLC', 'SFO', 'Oregon Lumber Inc', to_date('11/30/2016', 'mm/dd/yyyy'), to_date('12/03/2016', 'mm/dd/yyyy'), 'Big Dog');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'BOI', 'SEA', 'Washington Apples Inc', to_date('12/26/2016', 'mm/dd/yyyy'), to_date('12/29/2016', 'mm/dd/yyyy'), 'Big Dog');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'SLC', 'SEA', 'Washington Apples Inc', to_date('01/10/2017', 'mm/dd/yyyy'), to_date('01/11/2017', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Troy', 'SLC', 'SFO', 'Idaho Potatoes Inc', to_date('11/20/2016', 'mm/dd/yyyy'), to_date('11/22/2016', 'mm/dd/yyyy'), 'Big Dog');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Judy', 'SFO', 'SEA', 'Idaho Potatoes Inc', to_date('12/28/2016', 'mm/dd/yyyy'), to_date('12/30/2016', 'mm/dd/yyyy'), 'Big Dog');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Troy', 'SLC', 'SFO', 'Washington Apples Inc', to_date('12/11/2016', 'mm/dd/yyyy'), to_date('12/12/2016', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'SFO', 'BOI', 'Oregon Lumber Inc', to_date('01/11/2017', 'mm/dd/yyyy'), to_date('01/13/2017', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'SEA', 'SFO', 'Washington Apples Inc', to_date('11/24/2016', 'mm/dd/yyyy'), to_date('11/26/2016', 'mm/dd/yyyy'), 'Classy Cat');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'SEA', 'BOI', 'Idaho Potatoes Inc', to_date('01/08/2017', 'mm/dd/yyyy'), to_date('01/10/2017', 'mm/dd/yyyy'), 'Classy Cat');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Judy', 'BOI', 'SFO', 'Idaho Potatoes Inc', to_date('11/17/2016', 'mm/dd/yyyy'), to_date('11/20/2016', 'mm/dd/yyyy'), 'Big Dog');
+
+INSERT INTO haul_stage (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Judy', 'SEA', 'SFO', 'Oregon Lumber Inc', to_date('12/05/2016', 'mm/dd/yyyy'), to_date('12/07/2016', 'mm/dd/yyyy'), 'Classy Cat');
+
+
+
+
+--12
+SELECT emp.employee_id, begin.city_id, end.city_id, cli.client_id, hs.begin_date, hs.end_date, veh.vehicle_id
+FROM haul_stage hs
+JOIN vehicle veh
+ON hs.vehicle = veh.name
+JOIN client cli
+ON hs.client = cli.name
+JOIN employee emp
+ON hs.employee = emp.first_name
+JOIN city begin
+ON hs.begin_city = begin.code
+JOIN city end
+ON hs.end_city = end.code;
+
+--13
+INSERT INTO haul
+(
+  SELECT haul_s1.NEXTVAL, emp.employee_id, begin.city_id, end.city_id, cli.client_id, hs.begin_date, hs.end_date, veh.vehicle_id
+  FROM haul_stage hs
+  JOIN vehicle veh
+  ON hs.vehicle = veh.name
+  JOIN client cli
+  ON hs.client = cli.name
+  JOIN employee emp
+  ON hs.employee = emp.first_name
+  JOIN city begin
+  ON  hs.begin_city = begin.code
+  JOIN city end
+  ON hs.end_city = end.code
+);
+
+--HAUL2 TABLE
+SET DEFINE OFF
+
+CREATE TABLE haul_stage2 ( EMPLOYEE VARCHAR2(4),
+BEGIN_CITY VARCHAR2(3),
+END_CITY VARCHAR2(3),
+CLIENT VARCHAR2(21),
+BEGIN_DATE DATE,
+END_DATE DATE,
+VEHICLE VARCHAR2(10));
+
+INSERT INTO haul_stage2 (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Judy', 'SLC', 'SFO', 'Oregon Lumber Inc', to_date('12/11/2016', 'mm/dd/yyyy'), to_date('12/13/2016', 'mm/dd/yyyy'), 'Classy Cat');
+
+INSERT INTO haul_stage2 (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'SLC', 'SFO', 'Oregon Lumber Inc', to_date('01/20/2017', 'mm/dd/yyyy'), to_date('01/23/2017', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage2 (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'SEA', 'SFO', 'Washington Apples Inc', to_date('12/27/2016', 'mm/dd/yyyy'), to_date('12/28/2016', 'mm/dd/yyyy'), 'Big Dog');
+
+INSERT INTO haul_stage2 (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Judy', 'SEA', 'SFO', 'Oregon Lumber Inc', to_date('12/28/2016', 'mm/dd/yyyy'), to_date('12/31/2016', 'mm/dd/yyyy'), 'Big Dog');
+
+INSERT INTO haul_stage2 (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Troy', 'SFO', 'SLC', 'Washington Apples Inc', to_date('01/14/2017', 'mm/dd/yyyy'), to_date('01/16/2017', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage2 (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'BOI', 'SLC', 'Oregon Lumber Inc', to_date('11/22/2016', 'mm/dd/yyyy'), to_date('11/24/2016', 'mm/dd/yyyy'), 'Classy Cat');
+
+INSERT INTO haul_stage2 (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Judy', 'SFO', 'SLC', 'Idaho Potatoes Inc', to_date('01/12/2017', 'mm/dd/yyyy'), to_date('01/13/2017', 'mm/dd/yyyy'), 'Mad Max');
+
+INSERT INTO haul_stage2 (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Judy', 'BOI', 'SFO', 'Oregon Lumber Inc', to_date('12/28/2016', 'mm/dd/yyyy'), to_date('12/30/2016', 'mm/dd/yyyy'), 'Classy Cat');
+
+INSERT INTO haul_stage2 (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Matt', 'BOI', 'SLC', 'Washington Apples Inc', to_date('11/24/2016', 'mm/dd/yyyy'), to_date('11/25/2016', 'mm/dd/yyyy'), 'Classy Cat');
+
+INSERT INTO haul_stage2 (EMPLOYEE, BEGIN_CITY, END_CITY, CLIENT, BEGIN_DATE, END_DATE, VEHICLE) 
+VALUES ('Troy', 'SLC', 'SEA', 'Oregon Lumber Inc', to_date('01/09/2017', 'mm/dd/yyyy'), to_date('01/11/2017', 'mm/dd/yyyy'), 'Mad Max');
+
+--15
+MERGE INTO haul h
+USING             -- will have to join multiple tables to find
+    (
+      SELECT emp.employee_id, begin.city_id AS begin_city_id, end.city_id AS end_city_id, clt.client_id, hs2.begin_date, hs2.end_date, veh.vehicle_id
+        FROM haul_stage2 hs2
+          JOIN vehicle veh
+            ON hs2.vehicle = veh.name
+              JOIN client clt
+                ON hs2.client = clt.name
+                  JOIN employee emp
+                    ON hs2.employee = emp.first_name
+                      JOIN city begin
+                        ON hs2.begin_city = begin.code
+                          JOIN city end
+                            ON hs2.end_city = end.code
+    ) s
+ON                    -- something about the natural key
+    (
+      h.begin_city_id = s.begin_city_id AND h.end_city_id = s.end_city_id AND
+      h.begin_date = s.begin_date AND h.end_date = s.end_date AND h.employee_id = s.employee_id
+    )
+WHEN MATCHED THEN
+    UPDATE SET h.client_id = s.client_id
+   
+WHEN NOT MATCHED THEN
+    INSERT
+      (
+        h.haul_id, h.employee_id, h.begin_city_id, h.end_city_id,
+        h.client_id, h.begin_date, h.end_date, h.vehicle_id
+      )
+    VALUES
+      (
+        haul_s1.NEXTVAL, s.employee_id, s.begin_city_id, s.end_city_id,
+        s.client_id, s.begin_date, s.end_date, s.vehicle_id
+      );
+ 
+--merge
+/* MERGE INTO haul h
+USING (SELECT emp.employee_id, begin.city_id AS begin_city_id, end.city_id AS end_city_id, 
+      cli.client_id AS client2, hs2.begin_date, hs2.end_date, veh.vehicle_id
+  FROM haul_stage hs2
+  JOIN vehicle veh
+  ON hs2.vehicle = veh.name
+  JOIN client cli
+  ON hs2.client = cli.name
+  JOIN employee emp
+  ON hs2.employee = emp.first_name
+  JOIN city begin
+  ON  hs2.begin_city = begin.code
+  JOIN city end
+  ON hs2.end_city = end.code) s
+ON (h.begin_city_id = s.begin_city_id AND h.end_city_id = s.end_city_id AND 
+    h.begin_date = s.begin_date AND h.end_date = s.end_date AND 
+    h.employee_id = s.employee_id AND h.vehicle_id = s.vehicle_id AND 
+    h.client_id = s.client2)
+WHEN MATCHED THEN 
+  UPDATE SET h.employee_id = s.employee_id
+WHEN NOT MATCHED THEN 
+        INSERT (h.haul_id, h.employee_id, h.begin_city_id, h.end_city_id
+                , h.client_id, h.begin_date, h.end_date, h.vehicle_id)
+        VALUES (haul_s1.NEXTVAL, s.employee_id, s.begin_city_id, s.end_city_id
+                , s.client2, s.begin_date, s.end_date, s.vehicle_id);
+        */
+
+SELECT COUNT(*)
+FROM haul;
+
+SELECT e.first_name, COUNT(*) AS Cnt
+FROM haul h JOIN employee e
+  ON h.employee_id = e.employee_id
+GROUP BY e.first_name
+ORDER BY first_name;
+
+
+SELECT v.name, COUNT(*) AS Cnt
+FROM haul h JOIN vehicle v
+  ON h.vehicle_id = v.vehicle_id
+GROUP BY v.name
+ORDER BY v.name;
+
+SELECT bc.code, COUNT(*) AS Cnt
+FROM haul h JOIN city bc
+  ON h.begin_city_id = bc.city_id
+GROUP BY bc.code
+ORDER BY bc.code;
+
+SELECT c.name, COUNT(*) AS Cnt
+FROM haul h JOIN client c
+  ON h.client_id = c.client_id
+GROUP BY c.name
+ORDER BY c.name;
+
+
+
+
+
+-- Close log file.
+SPOOL OFF;
+
