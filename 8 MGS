@@ -1,0 +1,17 @@
+--08-01
+SELECT list_price, discount_percent, ROUND(list_price * discount_percent * .01,
+2) 
+AS discount_amount
+FROM products;
+
+--08-02
+SELECT card_number, LENGTH(card_number),
+SUBSTR(card_number, (INSTR(card_number, ' ')-4)) AS last_four,
+TO_CHAR('XXXX-XXXX-XXXX-') || SUBSTR(card_number, LENGTH(card_number) -3,4) AS secure_last_four
+FROM orders;
+
+--08-03
+SELECT order_id, order_date, order_date + 2 AS approx_ship_date,
+ship_date, TO_CHAR(ship_date - order_date, '99.99' )AS days_to_ship
+FROM orders
+WHERE order_date BETWEEN '1-MAR-2012' AND '1-APR-2012';
