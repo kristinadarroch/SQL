@@ -1,0 +1,25 @@
+--04-01
+SELECT first_name, last_name, line1, city, state, zip_code
+FROM customers cus  INNER JOIN addresses addr
+ON cus.customer_id = addr.customer_id
+WHERE addr.address_id = cus.shipping_address_id;
+
+--04-02
+SELECT last_name AS "last name", first_name AS "first name", 
+order_date AS "order date", product_name AS "product name", 
+item_price AS "item price", 
+discount_amount AS "discount amount", 
+quantity AS "quantity"
+FROM customers cus INNER JOIN orders ord
+ON cus.customer_id = ord.customer_id
+INNER JOIN order_items oi 
+ON ord.order_id = oi.order_id
+INNER JOIN products p
+ON oi.product_id = p.product_id
+ORDER BY last_name, order_date, product_name;
+
+--04-03
+SELECT category_name, product_id
+FROM categories ca LEFT JOIN products pr
+ON ca.category_id = pr.category_id
+WHERE pr.product_id is null;
