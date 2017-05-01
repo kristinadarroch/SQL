@@ -1,0 +1,39 @@
+--08-01
+SELECT invoice_total, TO_CHAR (invoice_total, '999,999.99'),
+TO_CHAR (invoice_total, '999,000'),
+CAST (invoice_total AS NUMBER(7))
+FROM invoices;
+
+--08-02
+SELECT invoice_date, TO_CHAR (invoice_date, 'DD-MON-RRRR HH24:MI:SS'),
+TO_CHAR (invoice_date, 'DD-MON-RRRR HH12:MI:SS PM'),
+CAST (invoice_date AS VARCHAR2(10))
+FROM invoices;
+
+--08-03
+SELECT vendor_name, UPPER(vendor_name), vendor_phone,
+SUBSTR(vendor_phone,11),
+SUBSTR(vendor_name, (INSTR(vendor_name, ' ') + 1), 
+(INSTR(vendor_name, ' ', INSTR(vendor_name, ' ') + 1 )) - 
+INSTR(vendor_name, ' ')),
+REPLACE(REPLACE((REPLACE(vendor_phone, '(', '')), ') ', '.'), '-', '.')
+FROM vendors;
+
+--08-04
+SELECT invoice_number, invoice_date, invoice_date + 30, payment_date, 
+payment_date - invoice_date AS days_to_pay, TO_CHAR(invoice_date, 'MM'),
+TO_CHAR(invoice_date, 'RRRR'), LAST_DAY(invoice_date)
+FROM invoices
+WHERE invoice_date BETWEEN '01-MAY-2014' AND '31-MAY-2014';
+
+--08-05
+SELECT invoice_number, 
+TO_CHAR(invoice_total - payment_total - credit_total, '999,999.99') 
+AS balance_due, RANK() OVER (ORDER BY 
+TO_CHAR(invoice_total - payment_total - credit_total, '999,999.99') DESC) 
+AS balance_rank
+FROM invoices
+WHERE TO_CHAR(invoice_total - payment_total - credit_total) > 0;
+
+
+
