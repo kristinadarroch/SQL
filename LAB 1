@@ -1,0 +1,181 @@
+
+@/home/student/Data/cit225/oracle/truck/cleanup_oracle(1).sql
+@/home/student/Data/cit225/oracle/truck/create_truck_tables.sql
+@/home/student/Data/cit225/oracle/truck/truck_inserts.sql
+
+
+-- Open log file.
+SPOOL lab1.log
+
+-- Perform Steps 6 - 16 of lab1 in this region
+
+
+--create maintenance table
+CREATE TABLE maintenance
+(
+   maintenance_id       NUMBER
+,  maintenance_date     DATE            CONSTRAINT nn_maintenance_1 NOT NULL  
+,  type                 VARCHAR2(60)    CONSTRAINT nn_maintenance_2 NOT NULL
+,  notes                VARCHAR2(60)    
+,  vehicle_id           NUMBER          CONSTRAINT nn_maintenance_3 NOT NULL
+,  employee_id          NUMBER          CONSTRAINT nn_maintenance_4 NOT NULL
+, CONSTRAINT pk_maintenance_id PRIMARY KEY(maintenance_id)
+, CONSTRAINT fk_maintenance_vehicle_id FOREIGN KEY (vehicle_id) REFERENCES vehicle(vehicle_id)
+, CONSTRAINT fk_maintenance_employee_id FOREIGN KEY (employee_id) REFERENCES employee(employee_id)
+, CONSTRAINT constraint_maintenance CHECK  (type = 'brake inspection'  OR type = 'LOF')
+);
+
+--CREATE SEQUENCE
+CREATE SEQUENCE maintenance_s1 START WITH 1;
+
+--CREATE UNIQUE INDEX
+CREATE UNIQUE INDEX maintenance_idx1 ON maintenance(maintenance_date, type, 
+vehicle_id, employee_id);
+
+  
+INSERT INTO maintenance
+VALUES
+( maintenance_s1.NEXTVAL
+, '19-Nov-2016'
+, 'LOF'
+, NULL
+, (SELECT vehicle_id FROM vehicle WHERE name = 'Mad Max')
+, (SELECT employee_id FROM employee WHERE first_name = 'Mike')
+);
+
+INSERT INTO maintenance
+VALUES
+( maintenance_s1.NEXTVAL
+, '24-Nov-2016'
+, 'brake inspection'
+, NULL
+, (SELECT vehicle_id FROM vehicle WHERE name = 'Classy Cat')
+, (SELECT employee_id FROM employee WHERE first_name = 'Mike')
+);
+
+
+
+-- create incident table
+
+
+CREATE TABLE incident
+(
+  incident_id         NUMBER
+, incident_date       DATE          CONSTRAINT nn_incident_1 NOT NULL
+, type                VARCHAR2(60)  CONSTRAINT nn_incident_2 NOT NULL
+, employee_id         NUMBER        CONSTRAINT nn_incident_3 NOT NULL
+, vehicle_id          NUMBER        CONSTRAINT nn_incident_4 NOT NULL
+, notes               VARCHAR2(60)
+, CONSTRAINT pk_incident PRIMARY KEY (incident_id)
+, CONSTRAINT fk_vehicle_id1 FOREIGN KEY (vehicle_id) REFERENCES vehicle (vehicle_id)
+, CONSTRAINT fk_employee1 FOREIGN KEY (employee_id) REFERENCES employee(employee_id)
+, CONSTRAINT check_incident CHECK (type = 'Overweight' OR type = 'Speeding'
+  OR type = 'Accident')
+);
+
+--CREATE SEQUENCE
+CREATE SEQUENCE incident_s1 START WITH 1;
+
+--CREATE UNIQUE INDEX
+CREATE UNIQUE INDEX incident_idx1 ON incident(incident_date, type, vehicle_id);
+
+
+INSERT INTO incident
+VALUES
+( incident_s1.NEXTVAL
+, '28-Dec-2016'
+, 'Overweight'
+, (SELECT employee_id FROM employee WHERE first_name = 'Matt')
+, (SELECT vehicle_id FROM vehicle WHERE name = 'Classy Cat')
+, NULL
+);
+
+
+--create table named drugtest
+CREATE TABLE drugtest
+(
+  drugtest_id         NUMBER
+, drugtest_date       DATE          CONSTRAINT nn_drugtest_1 NOT NULL
+, employee_id         NUMBER        CONSTRAINT nn_drugtest_2 NOT NULL
+, results             VARCHAR2(60)  CONSTRAINT nn_drugtest_3 NOT NULL
+
+, CONSTRAINT pk_drugtest  PRIMARY KEY(drugtest_id)
+, CONSTRAINT fk_employee_drugtest FOREIGN KEY(employee_id) REFERENCES employee(employee_id)
+, CONSTRAINT check_drugtest CHECK(results = 'Pending' OR results = 'Pass' OR 
+results = 'Fail')
+);
+
+--CREATE SEQUENCE
+CREATE SEQUENCE drugtest_s1 START WITH 1;
+
+--CREATE UNIQUE INDEX
+CREATE UNIQUE INDEX drugtest_idx1 ON drugtest(drugtest_date, results);
+
+--add to cities table
+INSERT INTO city
+VALUES
+(
+  city_s1.NEXTVAL
+, 'San Francisco'
+, 'SFO'
+);
+
+-- insert data into mileage table
+INSERT INTO mileage
+VALUES
+(
+  mileage_s1.NEXTVAL
+, (SELECT city_id FROM city WHERE code = 'BOI')
+, city_s1.CURRVAL
+, 800
+);
+
+INSERT INTO mileage
+VALUES
+(
+  mileage_s1.NEXTVAL
+, (SELECT city_id FROM city WHERE code = 'SLC')
+, city_s1.CURRVAL
+, 737
+);
+
+INSERT INTO mileage
+VALUES
+(
+  mileage_s1.NEXTVAL
+, (SELECT city_id FROM city WHERE code = 'SEA')
+, city_s1.CURRVAL
+, 809
+);
+
+--#13
+ALTER TABLE maintenance
+  DROP CONSTRAINT constraint_maintenance; 
+
+ALTER TABLE maintenance
+  ADD CONSTRAINT check_inspection CHECK (type = 'brake inspection' OR type = 'LOF'
+  OR type = 'Tire Inspection');
+
+
+
+--#14
+ALTER TABLE incident
+  DROP CONSTRAINT check_incident;
+  
+ALTER TABLE incident
+  ADD CONSTRAINT check_sleep CHECK (type = 'Overweight' OR type = 'Speeding'
+  OR type = 'Accident' OR type = 'Sleep Log');
+  
+--#15
+ALTER TABLE client
+  MODIFY phone
+  CONSTRAINT nn_client_7 NOT NULL;
+
+--#16
+ALTER TABLE employee
+  RENAME COLUMN fire_date TO termination_date;
+  
+
+
+-- Close log file.
+SPOOL OFF;
