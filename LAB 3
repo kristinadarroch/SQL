@@ -1,0 +1,119 @@
+
+-- Step 1 --
+
+@/home/student/Data/cit225/oracle/truck/lab2.sql;
+
+    
+-- Open log file.
+SPOOL lab3.log
+
+-- Perform Steps 2 - 7 of lab3 in this region
+
+--02
+SELECT c.name, COUNT(*)
+FROM client c JOIN haul h
+ON c.client_id = h.client_id
+GROUP BY c.name
+ORDER BY c.name;
+
+--03
+SELECT e.first_name ||''|| e.last_name AS driver, v.name AS truck, COUNT(*) AS
+haul_count
+FROM employee e
+JOIN haul h
+ON e.employee_id = h.employee_id
+JOIN vehicle v
+ON h.vehicle_id = v.vehicle_id
+GROUP BY e.first_name ||''|| e.last_name, v.name
+ORDER BY driver, COUNT(h.haul_id)DESC;
+
+--04
+SELECT DISTINCT e.first_name ||' '|| e.last_name AS driver,
+SUM(CASE 
+      WHEN v.name = 'Classy Cat' THEN 1
+          ELSE 0 
+    END) AS classy_cat,
+SUM(CASE
+      WHEN v.name = 'Mad Max' THEN 1
+        ELSE 0
+      END) AS mad_max,
+SUM(CASE
+      WHEN v.name = 'Big Dog' THEN 1
+        ELSE 0
+      END) AS big_dog
+FROM employee e 
+  JOIN haul h
+      ON e.employee_id = h.employee_id
+  JOIN vehicle v
+      ON h.vehicle_id = v.vehicle_id
+GROUP BY e.first_name ||' '|| e.last_name
+ORDER BY driver;
+
+--05
+
+--part a
+INSERT INTO mileage(mileage_id, city1_id, city2_id, miles)
+SELECT mileage_s1.NEXTVAL, m.city2_id, m.city1_id, m.miles
+FROM mileage m;
+
+--part b
+SELECT e.first_name ||' '|| e.last_name AS driver, SUM(m.miles) AS total_mileage
+FROM employee e
+  INNER JOIN haul h
+  ON e.employee_id = h.employee_id
+  INNER JOIN mileage m
+  ON h.begin_city_id = m.city1_id
+  AND h.end_city_id = m.city2_id
+  WHERE title = 'Driver'
+GROUP BY first_name ||' '|| last_name
+ORDER BY total_mileage DESC;
+
+-- 06
+
+SELECT e.first_name ||' '|| e.last_name AS driver
+, SUM(CASE WHEN EXTRACT(MONTH FROM h.begin_date) = 11 THEN m.miles ELSE 0 END) AS NOV
+, SUM(CASE WHEN EXTRACT(MONTH FROM h.begin_date) = 12 THEN m.miles ELSE 0 END) AS DEC
+, SUM(CASE WHEN EXTRACT(MONTH FROM h.begin_date) = 1 THEN m.miles ELSE 0 END) AS JAN
+, SUM(CASE WHEN EXTRACT(MONTH FROM h.begin_date) = 2 THEN m.miles ELSE 0 END) AS FEB
+, SUM(m.miles) AS total_mileage
+FROM employee e
+  INNER JOIN haul h
+  ON e.employee_id = h.employee_id
+  INNER JOIN mileage m
+  ON h.begin_city_id = m.city1_id
+  AND h.end_city_id = m.city2_id
+  WHERE title = 'Driver'
+GROUP BY first_name ||' '|| last_name
+ORDER BY total_mileage DESC;
+
+--07
+SELECT e.first_name ||' '|| e.last_name AS driver
+, SUM(CASE WHEN EXTRACT(MONTH FROM h.begin_date) = 11 THEN m.miles ELSE 0 END) AS NOV
+, SUM(CASE WHEN EXTRACT(MONTH FROM h.begin_date) = 11 THEN m.miles * r.rate ELSE 0 END) AS nov_gross_rev
+, SUM(CASE WHEN EXTRACT(MONTH FROM h.begin_date) = 12 THEN m.miles ELSE 0 END) AS DEC
+, SUM(CASE WHEN EXTRACT(MONTH FROM h.begin_date) = 12 THEN m.miles * r.rate ELSE 0 END) AS dec_gross_rev
+, SUM(CASE WHEN EXTRACT(MONTH FROM h.begin_date) = 1 THEN m.miles ELSE 0 END) AS JAN
+, SUM(CASE WHEN EXTRACT(MONTH FROM h.begin_date) = 1 THEN m.miles * r.rate ELSE 0 END) AS jan_gross_rev
+, SUM(CASE WHEN EXTRACT(MONTH FROM h.begin_date) = 2 THEN m.miles ELSE 0 END) AS FEB
+, SUM(CASE WHEN EXTRACT(MONTH FROM h.begin_date) = 2 THEN m.miles * r.rate ELSE 0 END) AS feb_gross_rev
+, SUM(m.miles) AS total_mileage
+, SUM(m.miles * r.rate) AS total_gross_rev
+FROM employee e
+JOIN haul h
+  ON e.employee_id = h.employee_id
+JOIN vehicle v
+  ON h.vehicle_id = v.vehicle_id
+JOIN mileage m
+  ON h.begin_city_id = m.city1_id
+  AND h.end_city_id = m.city2_id
+JOIN season s
+  ON EXTRACT(MONTH FROM h.begin_date) = s.month
+JOIN rate r
+  ON v.type = r.vehicle_type
+  AND s.season = r.season
+GROUP BY e.first_name ||' '|| e.last_name
+ORDER BY driver;
+
+-- Close log file.
+SPOOL OFF;
+    
