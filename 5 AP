@@ -1,0 +1,59 @@
+--05-01
+SELECT vendor_id, SUM(invoice_total)
+FROM invoices
+GROUP BY vendor_id
+ORDER BY vendor_id;
+
+--05-02
+SELECT vendor_name, SUM(invoice_total) as payment_total
+FROM vendors ven INNER JOIN invoices inv
+ON ven.vendor_id = inv.vendor_id
+GROUP BY vendor_name
+ORDER BY payment_total desc;
+
+--05-03
+SELECT vendor_name, COUNT(invoice_id) AS invoice_id, 
+SUM(invoice_total) AS invoice_total
+FROM vendors ven INNER JOIN invoices inv
+ON ven.vendor_id = inv.vendor_id
+GROUP BY ven.vendor_name
+ORDER BY invoice_id desc;
+
+--05-04
+SELECT account_description, COUNT(invoice_id) as inv_id,
+SUM(line_item_amt) as line_item_amt
+FROM general_ledger_accounts gen INNER JOIN invoice_line_items invl
+ON gen.account_number = invl.account_number
+GROUP BY gen.account_description
+HAVING COUNT(invoice_id) > 1
+ORDER BY line_item_amt desc;
+
+--05-05
+SELECT account_description, COUNT(invl.invoice_id) as inv_id,
+SUM(line_item_amt) as line_item_amt
+FROM general_ledger_accounts gen INNER JOIN invoice_line_items invl
+ON gen.account_number = invl.account_number
+INNER JOIN invoices inv
+ON invl.invoice_id = inv.invoice_id
+WHERE inv.invoice_date BETWEEN '01-APRIL-2014' AND '30-JUNE-2014'
+GROUP BY gen.account_description
+HAVING COUNT(invl.invoice_id) > 1 
+ORDER BY line_item_amt desc;
+
+--05-06
+SELECT SUM(line_item_amt), gla.account_number
+FROM invoice_line_items ili JOIN general_ledger_accounts gla
+ON ili.account_number = gla.account_number
+GROUP BY ROLLUP (gla.account_number)
+ORDER BY SUM(line_item_amt), gla.account_number;
+
+--05-07
+SELECT vendor_name,COUNT(DISTINCT ili.account_number)
+FROM vendors ven 
+JOIN invoices inv
+ON ven.vendor_id = inv.vendor_id
+JOIN invoice_line_items ili
+ON inv.invoice_id = ili.invoice_id
+GROUP BY ven.vendor_name
+HAVING COUNT (DISTINCT ili.account_number) > 1
+ORDER BY vendor_name;
